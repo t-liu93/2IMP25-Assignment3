@@ -1,9 +1,13 @@
 /* Query control variables */
 /* We do this per revision */
-select t_revision.id as revisionId, 
-    sum(t_file.f_linesInserted) as linesAdded, 
-    sum(t_file.f_linesDeleted) as linesDeleted,
-    count(t_file.id) as numberOfFilesModified
-from t_file, t_revision
-where t_file.f_revisionId = t_revision.id
-group by t_revision.id
+SELECT 
+    t_revision.id AS revisionId,
+    SUM(t_file.f_linesInserted) AS linesAdded,
+    SUM(t_file.f_linesDeleted) AS linesDeleted,
+    COUNT(t_file.id) AS numberOfFilesModified
+FROM
+    t_file,
+    t_revision
+WHERE
+    t_file.f_revisionId = t_revision.id
+GROUP BY t_revision.id

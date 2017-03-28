@@ -1,16 +1,24 @@
 /* Query predictor variables */
-select t_people.id as authorID,
-    min(t_change.ch_createdTime) as firstChangeCreatedTime, /* Ecosystem tenure */
-    count(t_change.id) as numberOfChanges, /* change activity */
-    min(h1.hist_createdTime) as firstReviewCreatedTime, /* review tenure */
-    count(h1.hist_changeId) as numberOfComments, /* review activity */
-    min(h2.hist_createdTime) as firstAppBloTime, /* approval/blocking tenure */
-    count(h2.hist_changeId) as numberOfAppBlo /* approval/blocking activity */
-from t_change, t_people, t_history as h1, t_history as h2
-where t_change.ch_authorAccountId = t_people.p_accountId and
-    t_change.ch_authorAccountId = h1.hist_authorAccountId and
-    (h2.hist_message like '%Do not submit%' or
-        h2.hist_message like '%Code-Review-2%' or
-        h2.hist_message like '%Looks good to me, approved%' or
-        h2.hist_message like '%Code-Review+2%')
-group by t_people.id
+SELECT 
+    t_people.id AS authorId,
+    TO_DAYS(MAX(t_change.ch_createdTime)) - TO_DAYS(MIN(t_change.ch_createdTime)) AS ecosystemTenure,
+    COUNT(t_change.id) AS changeActivity,
+    TO_DAYS(MAX(h1.hist_createdTime)) - TO_DAYS(MIN(h1.hist_createdTime)) AS reviewTenure,
+    COUNT(h1.id) AS reviewActivity,
+    TO_DAYS(MAX(h2.hist_createdTime)) - TO_DAYS(MIN(h2.hist_createdTime)) AS appBlockTenure,
+    COUNT(h2.id) AS appBlockActivity
+FROM
+    ((t_people
+    INNER JOIN t_change ON t_change.ch_authorAccountId = t_people.p_accountId)
+    INNER JOIN t_history AS h1 ON t_people.p_accountId = h1.hist_authorAccountId)
+    INNER JOIN (SELECT 
+        *
+    FROM
+        t_history
+    WHERE
+        hist_message LIKE '%Do not submit%'
+            OR hist_message LIKE '%Code-Review-2%'
+            OR hist_message LIKE '%Looks good to me, approved%'
+            OR hist_message LIKE '%Code-Review+2%') AS h2 ON t_people.p_accountId = h2.hist_authorAccountId
+GROUP BY t_people.id
+
