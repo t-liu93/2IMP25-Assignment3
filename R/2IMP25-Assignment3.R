@@ -9,11 +9,11 @@ par(mfrow = c(2, 2))
 #dep <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentVariable_Eclipse.csv")
 #ctrl <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_ControlVariable_Eclipse.csv")
 #File address on Yuyang's computer
-#dnc <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentAndControlVariable_Eclipse.csv")
-#Pre <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_PredictorVariable_Eclipse.csv")
+dnc <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentAndControlVariable_Eclipse.csv")
+Pre <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_PredictorVariable_Eclipse.csv")
 #Address on Tianyu's computer
-dnc <- read.csv("E:\\Documents\\Git\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentAndControlVariable_Eclipse.csv")
-Pre <- read.csv("E:\\Documents\\Git\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_PredictorVariable_Eclipse.csv")
+#dnc <- read.csv("E:\\Documents\\Git\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentAndControlVariable_Eclipse.csv")
+#Pre <- read.csv("E:\\Documents\\Git\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_PredictorVariable_Eclipse.csv")
 
 authorId <- c()
 changeId <- c()
@@ -143,9 +143,16 @@ p75Rp = quantile(dnc_final$reviewPeriod_final, prob = 0.75)
 IQRRp = p75Rp - p25Rp
 yLowerRp = p25Rp - 1.5 * IQRRp
 yUpperRp = p75Rp + 1.5 * IQRRp
-for (i in 1 : length(dnc_final)) {
-  if (dnc_final$reviewPeriod_final[i] >= yLowerRp && dnc_final$reviewPeriod_final[i] <= yUpperRp) {
-    #Under this condition is the values we need
+RP <- c()
+exp2 <- c()
+
+for (i in 1 : length(dnc_final$author_final)) {
+  if (dnc_final$reviewPeriod_final[i] >= yLowerRp) {
+    if(dnc_final$reviewPeriod_final[i] <= yUpperRp) {
+      #Under this condition is the values we need
+      RP[i] <- dnc_final$reviewPeriod_final[i]
+      exp2[i] <- dnc_final$exp[i]
+    }
   }
 }
 
@@ -153,25 +160,11 @@ for (i in 1 : length(dnc_final)) {
 dnc_final_orer = dnc_final[order(exp),]
 
 #Make model
-model = lm(reviewPeriod_final ~ exp)
-
+#model = lm(reviewPeriod_final ~ exp)
+model = lm(RP ~ exp2)
 #summary of the model  
 summary(model)
 plot(model)
-
-
-#eco <- c()
-#for(i in 1:200){
-#  eco[i] = Pre$ecosystemTenure[i]
-#}
-  
-#plot(eco)
-#qqnorm(eco)
-
-#plot(Pre$changeAcitivity)
-#plot(Pre$reviewTenure)
-#plot(Pre$reviewActivity)
-#plot(Pre$appBlockTenure)
-#plot(Pre$appBlockActivity)
+plot(exp2, RP)
 
 
