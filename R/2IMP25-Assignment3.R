@@ -4,12 +4,16 @@
 #https://www.youtube.com/watch?v=q1RD5ECsSB0  *star*
 #https://www.youtube.com/watch?v=eTZ4VUZHzxw  *star*
 
-library(outliers)
+#library(outliers)
 par(mfrow = c(2, 2))
 #dep <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentVariable_Eclipse.csv")
-ctrl <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_ControlVariable_Eclipse.csv")
-dnc <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentAndControlVariable_Eclipse.csv")
-Pre <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_PredictorVariable_Eclipse.csv")
+#ctrl <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_ControlVariable_Eclipse.csv")
+#File address on Yuyang's computer
+#dnc <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentAndControlVariable_Eclipse.csv")
+#Pre <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_PredictorVariable_Eclipse.csv")
+#Address on Tianyu's computer
+dnc <- read.csv("E:\\Documents\\Git\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentAndControlVariable_Eclipse.csv")
+Pre <- read.csv("E:\\Documents\\Git\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_PredictorVariable_Eclipse.csv")
 
 authorId <- c()
 changeId <- c()
@@ -125,9 +129,27 @@ exp <- 2*as.numeric(dnc4$eco) + as.numeric(dnc4$change) + 3*as.numeric(dnc4$revi
   as.numeric(dnc4$review_act) + 2*as.numeric(dnc4$block_tenure) + as.numeric(dnc4$block_act) +
   log(as.numeric(dnc4$LA_final)) + log(as.numeric(dnc4$LD_final)+0.5) + log(as.numeric(dnc4$FM_final))
 
+
 #final dataset
 dnc_final = data.frame(dnc4, exp)
 
+#do log transform on review period
+#dnc_final$reviewPeriod_final <- log(dnc_final$reviewPeriod_final + 0.5)
+
+#Calculate and remove the outliers
+#Outliers for review period
+p25Rp = quantile(dnc_final$reviewPeriod_final, prob = 0.25)
+p75Rp = quantile(dnc_final$reviewPeriod_final, prob = 0.75)
+IQRRp = p75Rp - p25Rp
+yLowerRp = p25Rp - 1.5 * IQRRp
+yUpperRp = p75Rp + 1.5 * IQRRp
+for (i in 1 : length(dnc_final)) {
+  if (dnc_final$reviewPeriod_final[i] >= yLowerRp && dnc_final$reviewPeriod_final[i] <= yUpperRp) {
+    #Under this condition is the values we need
+  }
+}
+
+#order
 dnc_final_orer = dnc_final[order(exp),]
 
 #Make model
