@@ -1,19 +1,10 @@
-#Mutilple linear regresstion help
-#http://www.statmethods.net/stats/regression.html
-#http://www.r-tutor.com/elementary-statistics/multiple-linear-regression
-#https://www.youtube.com/watch?v=q1RD5ECsSB0  *star*
-#https://www.youtube.com/watch?v=eTZ4VUZHzxw  *star*
-
-#library(outliers)
 par(mfrow = c(2, 2))
-#dep <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentVariable_Eclipse.csv")
-#ctrl <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_ControlVariable_Eclipse.csv")
-#File address on Yuyang's computer
+
+# Change the file address according to your system and the dataset you want to process
 dnc <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentAndControlVariable_Eclipse.csv")
 Pre <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_PredictorVariable_Eclipse.csv")
-#Address on Tianyu's computer
-#dnc <- read.csv("E:\\Documents\\Git\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentAndControlVariable_Eclipse.csv")
-#Pre <- read.csv("E:\\Documents\\Git\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_PredictorVariable_Eclipse.csv")
+#dnc <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\LibreOffice\\CSV_DependentAndControlVariable_LibreOffice.csv")
+#Pre <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\LibreOffice\\CSV_PredictorVariable_LibreOffice.csv")
 
 authorId <- c()
 changeId <- c()
@@ -146,25 +137,65 @@ yUpperRp = p75Rp + 1.5 * IQRRp
 RP <- c()
 exp2 <- c()
 
+#h <- 1
+#for (i in 1 : length(dnc_final$author_final)) {
+#  if (dnc_final$reviewPeriod_final[i] >= yLowerRp) {
+#    if(dnc_final$reviewPeriod_final[i] <= yUpperRp) {
+#      #Under this condition is the values we need
+#      RP[h] <- dnc_final$reviewPeriod_final[i]
+#      exp2[h] <- dnc_final$exp[i]
+#      h <- h + 1
+#    }
+#  }
+#}
+#without using exp
+A <- c()
+B <- c()
+C <- c()
+D <- c()
+E <- c()
+G <- c()
+H <- c()
+I <- c()
+J <- c()
+K <- c()
+
+h <- 1
 for (i in 1 : length(dnc_final$author_final)) {
   if (dnc_final$reviewPeriod_final[i] >= yLowerRp) {
     if(dnc_final$reviewPeriod_final[i] <= yUpperRp) {
       #Under this condition is the values we need
-      RP[i] <- dnc_final$reviewPeriod_final[i]
-      exp2[i] <- dnc_final$exp[i]
+      A[h] <- dnc_final$reviewPeriod_final[i]
+      B[h] <- dnc_final$LA_final[i]
+      C[h] <- dnc_final$LD_final[i]
+      D[h] <- dnc_final$FM_final[i]
+      E[h] <- dnc_final$eco[i]
+      G[h] <- dnc_final$change[i]
+      H[h] <- dnc_final$review_tenure[i]
+      I[h] <- dnc_final$review_act[i]
+      J[h] <- dnc_final$block_tenure[i]
+      K[h] <- dnc_final$block_act[i]
+      exp2[h] <- dnc_final$exp[i]
+      RP[h] <- dnc_final$reviewPeriod_final[i]
+      h <- h + 1
     }
   }
 }
+
 
 #order
 dnc_final_orer = dnc_final[order(exp),]
 
 #Make model
-#model = lm(reviewPeriod_final ~ exp)
-model = lm(RP ~ exp2)
+
+model1 = lm(A ~ B + C + D + E + G + H + I + J + K)
+model2 = lm(RP ~ exp2)
+
 #summary of the model  
-summary(model)
-plot(model)
-plot(exp2, RP)
-
-
+#summary(model1)
+summary(model2)
+#plot(model1)
+plot(model2)
+#plot(exp2, RP)
+#anova(model1)
+anova(model2)
