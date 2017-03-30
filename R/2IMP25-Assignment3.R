@@ -1,10 +1,10 @@
-par(mfrow = c(2, 2))
+#par(mfrow = c(2, 2))
 
 # Change the file address according to your system and the dataset you want to process
-dnc <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentAndControlVariable_Eclipse.csv")
-Pre <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_PredictorVariable_Eclipse.csv")
-#dnc <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\LibreOffice\\CSV_DependentAndControlVariable_LibreOffice.csv")
-#Pre <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\LibreOffice\\CSV_PredictorVariable_LibreOffice.csv")
+#dnc <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_DependentAndControlVariable_Eclipse.csv")
+#Pre <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\Eclipse\\CSV_PredictorVariable_Eclipse.csv")
+dnc <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\LibreOffice\\CSV_DependentAndControlVariable_LibreOffice.csv")
+Pre <- read.csv("D:\\2IMP25-Assignment3\\CSVdata\\LibreOffice\\CSV_PredictorVariable_LibreOffice.csv")
 
 authorId <- c()
 changeId <- c()
@@ -149,32 +149,32 @@ exp2 <- c()
 #  }
 #}
 #without using exp
-A <- c()
-B <- c()
-C <- c()
-D <- c()
-E <- c()
-G <- c()
-H <- c()
-I <- c()
-J <- c()
-K <- c()
+ReviewPeriod <- c()
+LinesAdded <- c()
+LinesDeleted <- c()
+FileModified <- c()
+EcosystemTenure <- c()
+ChangeActivity <- c()
+ReviewTenure <- c()
+ReviewActivity <- c()
+AppBlockTenure <- c()
+AppblockActivity <- c()
 
 h <- 1
 for (i in 1 : length(dnc_final$author_final)) {
   if (dnc_final$reviewPeriod_final[i] >= yLowerRp) {
     if(dnc_final$reviewPeriod_final[i] <= yUpperRp) {
       #Under this condition is the values we need
-      A[h] <- dnc_final$reviewPeriod_final[i]
-      B[h] <- dnc_final$LA_final[i]
-      C[h] <- dnc_final$LD_final[i]
-      D[h] <- dnc_final$FM_final[i]
-      E[h] <- dnc_final$eco[i]
-      G[h] <- dnc_final$change[i]
-      H[h] <- dnc_final$review_tenure[i]
-      I[h] <- dnc_final$review_act[i]
-      J[h] <- dnc_final$block_tenure[i]
-      K[h] <- dnc_final$block_act[i]
+      ReviewPeriod[h] <- dnc_final$reviewPeriod_final[i]
+      LinesAdded[h] <- dnc_final$LA_final[i]
+      LinesDeleted[h] <- dnc_final$LD_final[i]
+      FileModified[h] <- dnc_final$FM_final[i]
+      EcosystemTenure[h] <- dnc_final$eco[i]
+      ChangeActivity[h] <- dnc_final$change[i]
+      ReviewTenure[h] <- dnc_final$review_tenure[i]
+      ReviewActivity[h] <- dnc_final$review_act[i]
+      AppBlockTenure[h] <- dnc_final$block_tenure[i]
+      AppblockActivity[h] <- dnc_final$block_act[i]
       exp2[h] <- dnc_final$exp[i]
       RP[h] <- dnc_final$reviewPeriod_final[i]
       h <- h + 1
@@ -188,14 +188,22 @@ dnc_final_orer = dnc_final[order(exp),]
 
 #Make model
 
-model1 = lm(A ~ B + C + D + E + G + H + I + J + K)
+model1 = lm(ReviewPeriod ~ log(LinesAdded) + 
+                log(LinesDeleted+0.5) + 
+                log(FileModified) + 
+                EcosystemTenure + 
+                ChangeActivity + 
+                ReviewTenure + 
+                ReviewActivity + 
+                AppBlockTenure +
+                AppblockActivity)
 model2 = lm(RP ~ exp2)
 
 #summary of the model  
 #summary(model1)
-summary(model2)
+#summary(model2)
 #plot(model1)
-plot(model2)
-#plot(exp2, RP)
+#plot(model2)
+plot(log(exp2), RP)
 #anova(model1)
-anova(model2)
+#anova(model2)
